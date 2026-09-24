@@ -1,0 +1,21 @@
+// Base TypeScript settings inherited by every workspace package.
+{
+  "compilerOptions": {
+    // Language level and module system: modern Node.js ESM.
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    // Type safety: catch bugs in fare, seat and status logic at compile time.
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    // Interop and build hygiene.
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true
+  }
+}

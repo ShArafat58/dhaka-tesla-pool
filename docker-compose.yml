@@ -1,0 +1,28 @@
+# Local services for Dhaka Tesla Pool.
+# Right now only PostgreSQL; the backend and frontend containers join in later phases.
+name: dhaka-tesla-pool
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: dtp-db
+    restart: unless-stopped
+    # Credentials come from .env (copy .env.example); compose refuses to start without them.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+    ports:
+      - "${POSTGRES_PORT:-55432}:5432"
+    # Named volume keeps data between restarts.
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    # Other services will wait until the database actually accepts connections.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
