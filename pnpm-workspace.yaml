@@ -1,3 +1,8 @@
+# Workspace packages managed by pnpm.
+# frontend -> Next.js web app (added in its own phase)
+# backend  -> Node.js REST API (added in its own phase)
+# shared   -> types and constants used by both sides
 packages:
-  - "apps/*"
-  - "packages/*"
+  - "frontend"
+  - "backend"
+  - "shared"
