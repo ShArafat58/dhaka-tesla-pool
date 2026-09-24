@@ -1,0 +1,21 @@
+{
+    "name": "dhaka-tesla-pool",
+    "version": "0.0.0",
+    "private": true,
+    "description": "Ride-pooling MVP for Dhaka: share a Tesla seat, split the fare.",
+    "packageManager": "pnpm@10.34.5",
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=10"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "typecheck": "pnpm -r --if-present typecheck"
+    },
+    "devDependencies": {
+        "typescript": "~6.0.3"
+    }
+}
