@@ -5,23 +5,23 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-    {
-        ignores: ["**/node_modules/**", "**/dist/**", "**/.next/**", "**/coverage/**"],
+  {
+    ignores: ["**/node_modules/**", "**/dist/**", "**/.next/**", "**/coverage/**"],
+  },
+  js.configs.recommended,
+  tseslint.configs.recommended,
+  {
+    languageOptions: {
+      globals: { ...globals.node },
     },
-    js.configs.recommended,
-    tseslint.configs.recommended,
-    {
-        languageOptions: {
-            globals: { ...globals.node },
-        },
-        rules: {
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-            ],
-            "@typescript-eslint/consistent-type-imports": "error",
-            "no-console": "error",
-        },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/consistent-type-imports": "error",
+      "no-console": "error",
     },
-    prettier,
+  },
+  prettier,
 );
