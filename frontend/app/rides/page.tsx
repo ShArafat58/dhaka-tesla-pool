@@ -12,9 +12,13 @@ import { StatusTimeline } from "@/components/status-timeline.tsx";
 import { api, ApiRequestError } from "@/lib/api.ts";
 import { formatArea, formatKm, formatTaka, humanizeStatus } from "@/lib/format.ts";
 import type { Estimate, JoinablePool, Ride } from "@/lib/types.ts";
+import { useToast } from "@/lib/toast.tsx";
+import { RideCardSkeleton } from "@/components/skeleton.tsx";
+import { BulletMascot } from "@/components/bullet-mascot.tsx";
 
 function RidesInner() {
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [pickupArea, setPickupArea] = useState("BANANI");
   const [dropoffArea, setDropoffArea] = useState("MOHAKHALI");
   const [seats, setSeats] = useState(1);
@@ -51,6 +55,7 @@ function RidesInner() {
       }),
     onSuccess: () => {
       setEstimate(null);
+      toast.success("Ride requested. Waiting for a driver.");
       void queryClient.invalidateQueries({ queryKey: ["rides"] });
     },
     onError: (err) =>
@@ -59,13 +64,23 @@ function RidesInner() {
 
   const cancelMutation = useMutation({
     mutationFn: (rideId: string) => api(`/rides/${rideId}/cancel`, { method: "POST" }),
-    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["rides"] }),
+    onSuccess: () => {
+      toast.success("Ride cancelled.");
+      void queryClient.invalidateQueries({ queryKey: ["rides"] });
+    },
+    onError: (err) =>
+      toast.error(err instanceof ApiRequestError ? err.error.message : "Could not cancel"),
   });
 
   const joinMutation = useMutation({
     mutationFn: (vars: { poolId: string; rideId: string }) =>
       api("/rides/join", { method: "POST", body: JSON.stringify(vars) }),
-    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["rides"] }),
+    onSuccess: () => {
+      toast.success("Joined the pool! You're sharing the ride.");
+      void queryClient.invalidateQueries({ queryKey: ["rides"] });
+    },
+    onError: (err) =>
+      toast.error(err instanceof ApiRequestError ? err.error.message : "Could not join"),
   });
 
   const sameArea = pickupArea === dropoffArea;
@@ -184,8 +199,9 @@ function RidesInner() {
           <h2 className="text-lg font-bold">My rides</h2>
 
           {ridesQuery.isLoading && (
-            <div className="rounded-2xl border bg-card p-8 text-center text-sm text-muted-foreground">
-              Loading your rides...
+            <div className="space-y-3">
+              <RideCardSkeleton />
+              <RideCardSkeleton />
             </div>
           )}
 
@@ -196,8 +212,11 @@ function RidesInner() {
           )}
 
           {ridesQuery.data?.length === 0 && (
-            <div className="rounded-2xl border bg-card p-8 text-center text-sm text-muted-foreground">
-              No rides yet. Request one above to get moving.
+            <div className="flex flex-col items-center gap-3 rounded-2xl border bg-card p-8 text-center">
+              <BulletMascot className="h-16 w-24 opacity-60" />
+              <p className="text-sm text-muted-foreground">
+                No rides yet. Request one above to get moving.
+              </p>
             </div>
           )}
 

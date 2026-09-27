@@ -8,9 +8,12 @@ import { SeatIndicator } from "@/components/seat-indicator.tsx";
 import { api, ApiRequestError } from "@/lib/api.ts";
 import { formatArea, formatKm, formatTaka, humanizeStatus } from "@/lib/format.ts";
 import type { ActivePool, Ride, Vehicle } from "@/lib/types.ts";
+import { useToast } from "@/lib/toast.tsx";
+import { RideCardSkeleton } from "@/components/skeleton.tsx";
 
 function DriverInner() {
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const vehicleQuery = useQuery({
     queryKey: ["vehicle"],
@@ -39,20 +42,37 @@ function DriverInner() {
   const onlineMutation = useMutation({
     mutationFn: (isOnline: boolean) =>
       api("/driver/online", { method: "PATCH", body: JSON.stringify({ isOnline }) }),
-    onSuccess: refresh,
+    onSuccess: (_data, isOnline) => {
+      toast.success(isOnline ? "You're online." : "You're offline.");
+      refresh();
+    },
   });
 
   const acceptMutation = useMutation({
     mutationFn: (rideId: string) => api(`/driver/rides/${rideId}/accept`, { method: "POST" }),
-    onSuccess: refresh,
+    onSuccess: () => {
+      toast.success("Ride accepted. Pool started.");
+      refresh();
+    },
+    onError: (err) =>
+      toast.error(err instanceof ApiRequestError ? err.error.message : "Could not accept"),
   });
 
   const advanceMutation = useMutation({
     mutationFn: (vars: { poolId: string; action: "arrive" | "start" | "complete" }) =>
       api(`/driver/pools/${vars.poolId}/${vars.action}`, { method: "POST" }),
-    onSuccess: refresh,
+    onSuccess: (_data, vars) => {
+      const msg = {
+        arrive: "Marked as arrived.",
+        start: "Trip started.",
+        complete: "Trip completed.",
+      };
+      toast.success(msg[vars.action]);
+      refresh();
+    },
+    onError: (err) =>
+      toast.error(err instanceof ApiRequestError ? err.error.message : "Could not update"),
   });
-
   const vehicle = vehicleQuery.data;
   const pool = poolQuery.data;
   const requests = requestsQuery.data ?? [];
@@ -161,8 +181,9 @@ function DriverInner() {
           )}
 
           {vehicle?.isOnline && requestsQuery.isLoading && (
-            <div className="rounded-2xl border bg-card p-6 text-center text-sm text-muted-foreground">
-              Looking for requests...
+            <div className="space-y-3">
+              <RideCardSkeleton />
+              <RideCardSkeleton />
             </div>
           )}
 
