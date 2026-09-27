@@ -23,8 +23,9 @@ export function StatusTimeline({ status }: { status: RideStatus }) {
   return (
     <ol className="flex items-center">
       {STEPS.map((step, i) => {
-        const done = i < currentIndex;
-        const active = i === currentIndex;
+        const isCompleted = status === "COMPLETED";
+        const done = i < currentIndex || isCompleted;
+        const active = i === currentIndex && !isCompleted;
         return (
           <li key={step.status} className="flex flex-1 items-center last:flex-none">
             <div className="flex flex-col items-center">
