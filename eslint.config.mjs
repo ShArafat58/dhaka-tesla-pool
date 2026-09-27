@@ -8,7 +8,7 @@ import tseslint from "typescript-eslint";
 export default defineConfig(
   // Generated and third-party output is never linted.
   {
-    ignores: ["**/node_modules/**", "**/dist/**", "**/.next/**", "**/coverage/**"],
+    ignores: ["**/node_modules/**", "**/dist/**", "**/.next/**", "**/coverage/**", "frontend/**"],
   },
 
   // Recommended rule sets for JavaScript and TypeScript.
