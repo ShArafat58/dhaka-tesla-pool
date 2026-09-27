@@ -1,0 +1,20 @@
+{
+  "name": "@dtp/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Dhaka Tesla Pool REST API.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.4",
+    "drizzle-orm": "^0.45.3",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15"
+  }
+}
