@@ -102,6 +102,7 @@ export const pools = pgTable(
       .notNull()
       .references(() => areas.code, { onDelete: "restrict" }),
     status: text("status").$type<PoolStatus>().notNull().default("FORMING"),
+    capacity: integer("capacity").notNull(),
     seatsTaken: integer("seats_taken").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -109,6 +110,7 @@ export const pools = pgTable(
     index("pools_driver_status_idx").on(t.driverId, t.status),
     check("pools_status_check", inList("status", POOL_STATUSES)),
     check("pools_seats_non_negative", sql`${t.seatsTaken} >= 0`),
+    check("pools_seats_within_capacity", sql`${t.seatsTaken} <= ${t.capacity}`),
   ],
 );
 

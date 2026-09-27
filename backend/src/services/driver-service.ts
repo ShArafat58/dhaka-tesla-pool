@@ -89,6 +89,7 @@ export async function acceptRide(driverId: string, rideId: string) {
         driverId,
         pickupArea: ride.pickupArea,
         status: "ACCEPTED",
+        capacity: vehicle.capacity,
         seatsTaken: ride.seats,
       })
       .returning();

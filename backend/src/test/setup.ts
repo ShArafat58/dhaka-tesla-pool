@@ -9,6 +9,7 @@ const migrationsDir = join(dirname(fileURLToPath(import.meta.url)), "..", "..", 
 // Drops and recreates the public schema, then applies every generated migration.
 // Gives each test a clean database.
 export async function resetSchema(): Promise<void> {
+  await db.execute(sql`SET client_min_messages TO WARNING`);
   await db.execute(sql`DROP SCHEMA public CASCADE`);
   await db.execute(sql`CREATE SCHEMA public`);
 
