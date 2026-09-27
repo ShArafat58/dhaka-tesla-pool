@@ -57,21 +57,18 @@ function Wheel({
 export default function LoginPage() {
   const router = useRouter();
   const { signin } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("password123");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState<string | null>(null);
 
-  async function submit(nextEmail: string) {
+  async function submit(email: string) {
     setError(null);
-    setLoading(true);
+    setLoadingEmail(email);
     try {
-      const user = await signin(nextEmail, password);
+      const user = await signin(email, "password123");
       router.push(user.role === "DRIVER" ? "/driver" : "/rides");
     } catch (err) {
       setError(err instanceof ApiRequestError ? err.error.message : "Something went wrong");
-    } finally {
-      setLoading(false);
+      setLoadingEmail(null);
     }
   }
 
@@ -141,50 +138,28 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="space-y-3">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border bg-background px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
-          />
-          <button
-            onClick={() => submit(email)}
-            disabled={loading || !email}
-            className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
+        <p className="mb-3 text-center text-sm font-medium">Tap a profile to sign in</p>
+        <div className="grid grid-cols-2 gap-3">
+          {DEMO.map((d) => (
+            <button
+              key={d.email}
+              onClick={() => submit(d.email)}
+              disabled={loadingEmail !== null}
+              className="rounded-xl border bg-muted px-3 py-3 text-sm font-medium transition hover:border-primary hover:bg-card disabled:opacity-50"
+            >
+              <span className="block font-semibold">{d.label}</span>
+              <span className="text-xs text-muted-foreground">
+                {loadingEmail === d.email ? "Signing in..." : d.role}
+              </span>
+            </button>
+          ))}
         </div>
 
-        {error && <p className="mt-3 text-center text-sm text-danger">{error}</p>}
+        {error && <p className="mt-4 text-center text-sm text-danger">{error}</p>}
 
-        <div className="mt-6">
-          <p className="mb-2 text-center text-xs text-muted-foreground">
-            Quick demo login (password: password123)
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {DEMO.map((d) => (
-              <button
-                key={d.email}
-                onClick={() => submit(d.email)}
-                disabled={loading}
-                className="rounded-lg border bg-muted px-3 py-2 text-xs font-medium transition hover:border-primary disabled:opacity-50"
-              >
-                <span className="block font-semibold">{d.label}</span>
-                <span className="text-muted-foreground">{d.role}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Demo accounts, all using password <span className="font-mono">password123</span>
+        </p>
       </motion.div>
     </main>
   );
