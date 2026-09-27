@@ -19,6 +19,14 @@ import {
   RIDE_STATUSES,
   USER_ROLES,
 } from "@dtp/shared";
+import type {
+  EntityType,
+  PaymentMethod,
+  PaymentStatus,
+  PoolStatus,
+  RideStatus,
+  UserRole,
+} from "@dtp/shared";
 
 // Enums are stored as text + CHECK, not a Postgres ENUM type, so adding a value
 // is a plain migration instead of an ALTER TYPE.
@@ -32,7 +40,7 @@ export const users = pgTable(
     name: text("name").notNull(),
     email: text("email").notNull(),
     passwordHash: text("password_hash").notNull(),
-    role: text("role").notNull(),
+    role: text("role").$type<UserRole>().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -93,7 +101,7 @@ export const pools = pgTable(
     pickupArea: text("pickup_area")
       .notNull()
       .references(() => areas.code, { onDelete: "restrict" }),
-    status: text("status").notNull().default("FORMING"),
+    status: text("status").$type<PoolStatus>().notNull().default("FORMING"),
     seatsTaken: integer("seats_taken").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -123,8 +131,8 @@ export const rideRequests = pgTable(
     bearingDeg: integer("bearing_deg").notNull(),
     soloFarePaisa: integer("solo_fare_paisa").notNull(),
     finalFarePaisa: integer("final_fare_paisa"),
-    status: text("status").notNull().default("REQUESTED"),
-    paymentMethod: text("payment_method").notNull(),
+    status: text("status").$type<RideStatus>().notNull().default("REQUESTED"),
+    paymentMethod: text("payment_method").$type<PaymentMethod>().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -145,8 +153,8 @@ export const payments = pgTable(
       .notNull()
       .references(() => rideRequests.id, { onDelete: "cascade" }),
     amountPaisa: integer("amount_paisa").notNull(),
-    method: text("method").notNull(),
-    status: text("status").notNull().default("PENDING"),
+    method: text("method").$type<PaymentMethod>().notNull(),
+    status: text("status").$type<PaymentStatus>().notNull().default("PENDING"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
@@ -160,7 +168,7 @@ export const statusHistory = pgTable(
   "status_history",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    entityType: text("entity_type").notNull(),
+    entityType: text("entity_type").$type<EntityType>().notNull(),
     entityId: uuid("entity_id").notNull(),
     fromStatus: text("from_status"),
     toStatus: text("to_status").notNull(),
