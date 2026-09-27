@@ -32,6 +32,21 @@
   }
 }
 
+:root[data-theme="dark"] {
+  --background: #14140f;
+  --foreground: #f2efe6;
+  --card: #1e1e17;
+  --muted: #26261c;
+  --muted-foreground: #a8a390;
+  --border: #33322450;
+  --primary: #1c9e6a;
+  --primary-foreground: #ffffff;
+  --accent: #f5b642;
+  --accent-foreground: #14140f;
+  --danger: #e5675a;
+  --ring: #1c9e6a;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -56,4 +71,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+button {
+  transition:
+    transform 0.08s ease,
+    opacity 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+button:active:not(:disabled) {
+  transform: scale(0.97);
 }
