@@ -100,6 +100,17 @@ riders claim the same seat.
 - Full status history is kept for every ride and pool (audit trail)
 - Cash or a simulated **TeslaPay** wallet
 
+## 📸 Screenshots
+
+<div align="center">
+
+|                   Sign in                    |                      Passenger                       |                   Driver                    |
+| :------------------------------------------: | :--------------------------------------------------: | :-----------------------------------------: |
+|      ![Login](./docs/images/login.png)       |      ![Passenger](./docs/images/passenger.png)       |     ![Driver](./docs/images/driver.png)     |
+| Tap-a-profile sign in with the Bullet mascot | Request a ride, live fare breakdown, status timeline | Online toggle, pool card and seat occupancy |
+
+</div>
+
 ## 🏗️ Architecture
 
 A small, deliberate monolith: one Next.js frontend, one Node.js REST API, one
@@ -511,10 +522,10 @@ and defensible.
 
 ## 🎥 Demo video
 
-> 📌 A ≤6-minute walkthrough (problem, architecture, and a product tour including
-> the concurrency edge case) will be linked here.
+**[▶️ Watch the 6-minute walkthrough](https://youtu.be/T3vepbKmVjg)**
 
-`[Watch the demo](#)` _(coming soon)_
+A quick tour of the problem, the architecture and database, and a live product
+demo — passenger flow, driver flow, pooling, and the last-seat concurrency case.
 
 ## 🌆 If Oi Tesla Goes Viral
 
