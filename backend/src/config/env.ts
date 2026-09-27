@@ -1,5 +1,10 @@
-import "dotenv/config";
+import { config } from "dotenv";
 import { z } from "zod";
+
+// In tests, load backend/.env.test so we hit the throwaway database.
+// Otherwise load the normal .env. Either file is optional in CI, where the
+// environment is provided directly.
+config({ path: process.env.NODE_ENV === "test" ? "backend/.env.test" : "backend/.env" });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
