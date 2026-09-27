@@ -1,0 +1,2 @@
+ALTER TABLE "pools" ADD COLUMN "capacity" integer NOT NULL;--> statement-breakpoint
+ALTER TABLE "pools" ADD CONSTRAINT "pools_seats_within_capacity" CHECK ("pools"."seats_taken" <= "pools"."capacity");
