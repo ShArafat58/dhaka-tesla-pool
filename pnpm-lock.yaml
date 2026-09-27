@@ -32,6 +32,9 @@ importers:
 
   backend:
     dependencies:
+      '@dtp/shared':
+        specifier: workspace:*
+        version: link:../shared
       dotenv:
         specifier: ^18.0.4
         version: 18.0.4
