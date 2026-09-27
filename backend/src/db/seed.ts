@@ -1,7 +1,16 @@
 import { hash } from "bcryptjs";
 import { AREAS } from "@dtp/shared";
 import { db } from "./client.ts";
-import { areas, users, vehicles, wallets } from "./schema.ts";
+import {
+  areas,
+  payments,
+  pools,
+  rideRequests,
+  statusHistory,
+  users,
+  vehicles,
+  wallets,
+} from "./schema.ts";
 
 const DEMO_PASSWORD = "password123";
 const BULLET_CAPACITY = 3;
@@ -9,6 +18,11 @@ const STARTING_BALANCE_PAISA = 50_000;
 
 async function seed() {
   // Wipe in dependency order so re-running the seed is safe.
+  // Delete in FK-dependency order so re-running the seed is always safe.
+  await db.delete(statusHistory);
+  await db.delete(payments);
+  await db.delete(rideRequests);
+  await db.delete(pools);
   await db.delete(wallets);
   await db.delete(vehicles);
   await db.delete(users);
