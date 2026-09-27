@@ -29,3 +29,21 @@ export type Estimate = {
   soloFarePaisa: number;
   pooledFarePaisa: number;
 };
+export type Vehicle = {
+  id: string;
+  driverId: string;
+  name: string;
+  capacity: number;
+  isOnline: boolean;
+};
+
+export type ActivePool = {
+  pool: {
+    id: string;
+    pickupArea: string;
+    status: string;
+    capacity: number;
+    seatsTaken: number;
+  };
+  passengers: Ride[];
+};
