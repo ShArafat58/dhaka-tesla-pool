@@ -4,6 +4,7 @@ import { db } from "../db/client.ts";
 import { pools, rideRequests, statusHistory, vehicles } from "../db/schema.ts";
 import { badRequest, forbidden, notFound } from "../lib/errors.ts";
 import { canTransitionPool, canTransitionRide } from "../lib/state-machine.ts";
+import { finalizeFaresForPool, settlePaymentsForPool } from "./payment-service.ts";
 
 async function getOwnedVehicle(driverId: string) {
   const [vehicle] = await db
@@ -148,6 +149,15 @@ async function advancePool(driverId: string, poolId: string, to: PoolStatus, rea
       changedBy: driverId,
       reason,
     });
+
+    // Freeze final fares the moment the trip starts (pooled discount if 2+ riders).
+    if (to === "IN_PROGRESS") {
+      await finalizeFaresForPool(tx, poolId);
+    }
+    // Settle payment while the rides are still STARTED, before they move to COMPLETED.
+    if (to === "COMPLETED") {
+      await settlePaymentsForPool(tx, poolId);
+    }
 
     const rideMove = POOL_TO_RIDE[to];
     if (rideMove) {
