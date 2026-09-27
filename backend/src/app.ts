@@ -9,6 +9,7 @@ import { logger } from "./lib/logger.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 import { authRouter } from "./routes/auth.ts";
 import { healthRouter } from "./routes/health.ts";
+import { ridesRouter } from "./routes/rides.ts";
 
 export function createApp() {
   const app = express();
@@ -30,7 +31,7 @@ export function createApp() {
 
   app.use("/health", healthRouter);
   app.use("/auth", authRouter);
-
+  app.use("/rides", ridesRouter);
   app.use(notFoundHandler);
   app.use(errorHandler);
 
